@@ -1,7 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.contrib.auth import login, authenticate
 from rest_framework import generics, status
-from .serializers import OrderSerializer, CreateOrderSerializer
-from .models import Order
+from .serializers import OrderSerializer, CreateOrderSerializer, AccountSerializer, CreateAccountSerializer
+from .models import Order, Account
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
@@ -13,10 +14,26 @@ class OrderView(generics.ListAPIView):
     serializer_class = OrderSerializer
 
 
+class GetOrder(APIView):
+    serializer_class = OrderSerializer
+    lookup_url_kwarg = 'order_id'
+
+    def get(self, request, format=None):
+        order_id = request.GET.get(self.lookup_url_kwarg)
+        if order_id != None:
+            order = Order.objects.filter(order_id=order_id)
+            if len(order) > 0:
+                data = OrderSerializer(order[0]).data
+                data['manual_order'] = 'sukim2406' == order[0].owner
+                return Response(data, status=status.HTTP_200_OK)
+            return Response({'Order Not Found': 'Invalid order_id'}, status=status.HTTP_404_NOT_FOUND)
+        return Response({'Bad Request': 'order_id paramater not found in request'}, status=status.HTTP_400_BAD_REQUEST)
+
+
 class CreateOrderView(APIView):
     serializer_class = CreateOrderSerializer
 
-    def post(self, request, format =None):
+    def post(self, request, format=None):
 
         # Login info should go here
         if not self.request.session.exists(self.request.session.session_key):
@@ -38,3 +55,26 @@ class CreateOrderView(APIView):
             order.save()
 
             return Response(OrderSerializer(order).data, status=status.HTTP_200_OK)
+
+
+class AccountView(generics.ListAPIView):
+    queryset = Account.objects.all()
+    serializer_class = AccountSerializer
+
+
+class CreateAccountView(APIView):
+    serializer_class = CreateAccountSerializer
+
+    def post(self, request, format=None):
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid():
+            email = serializer.data.get('email')
+            username = serializer.data.get('username')
+            password = serializer.data.get('password')
+            api_key = serializer.data.get('api_key')
+            secret_key = serializer.data.get('secret_key')
+
+            account = Account(email=email, username=username, password=password, api_key=api_key, secret_key=secret_key)
+            account.save()
+
+            return Response(AccountSerializer(account).data, status=status.HTTP_200_OK)
