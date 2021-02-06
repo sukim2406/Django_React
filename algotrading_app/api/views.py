@@ -1,10 +1,12 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth import login, authenticate
-from rest_framework import generics, status
-from .serializers import OrderSerializer, CreateOrderSerializer, AccountSerializer, CreateAccountSerializer
+from django.contrib.auth import login, authenticate, logout
+from rest_framework import generics, status, permissions, authentication
+from .serializers import OrderSerializer, CreateOrderSerializer, AccountSerializer, CreateAccountSerializer, LogInSerializer
 from .models import Order, Account
 from rest_framework.views import APIView
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
 
 
 # Create your views here.
@@ -55,6 +57,7 @@ class CreateOrderView(APIView):
             order.save()
 
             return Response(OrderSerializer(order).data, status=status.HTTP_200_OK)
+        return Response({'Bad Request': 'Something went Wrong'}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class AccountView(generics.ListAPIView):
@@ -64,17 +67,38 @@ class AccountView(generics.ListAPIView):
 
 class CreateAccountView(APIView):
     serializer_class = CreateAccountSerializer
+    permission_classes = (permissions.AllowAny,)
 
+    def post(self, request, format=None):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    
+class LogIn(APIView):
+    permission_classes = (permissions.AllowAny,)
+    authentication_classes = (SessionAuthentication, BasicAuthentication,)
+    serializer_class = LogInSerializer
+    
     def post(self, request, format=None):
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
             email = serializer.data.get('email')
-            username = serializer.data.get('username')
             password = serializer.data.get('password')
-            api_key = serializer.data.get('api_key')
-            secret_key = serializer.data.get('secret_key')
 
-            account = Account(email=email, username=username, password=password, api_key=api_key, secret_key=secret_key)
-            account.save()
+            account = authenticate(email=email, password=password)
 
-            return Response(AccountSerializer(account).data, status=status.HTTP_200_OK)
+            if account is not None:
+                login(request, account)
+                return Response({'status': 'Successful', 'message': 'Success'}, status=status.HTTP_200_OK)
+            
+            return Response({'status': 'Unauthorized', 'message': 'Invalid info'}, status=status.HTTP_401_UNAUTHORIZED)
+        
+        return Response({'Bad Request': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+class LogOut(APIView):
+
+    def get(self, request, format=None):
+        logout(request)
+        return Response(status=status.HTTP_200_OK)

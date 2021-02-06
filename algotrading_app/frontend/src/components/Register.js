@@ -75,7 +75,7 @@ export default class Login extends Component {
         };
         fetch('/api/create-account', requestOptions)
         .then((response) => response.json())
-        .then(console.log(response));
+        .then(() => this.props.history.push('/'));
     }
 
     render() {

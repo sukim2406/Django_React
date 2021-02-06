@@ -48,6 +48,8 @@ class MyAccountManager(BaseUserManager):
             secret_key = secret_key,
         )
 
+        print(user)
+
         user.set_password(password)
         user.save(using=self._db)
         
