@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import OrderView, CreateOrderView, GetOrder, AccountView, CreateAccountView, LogIn, LogOut
+from .views import OrderView, CreateOrderView, GetOrder, AccountView, CreateAccountView, LogIn, LogOut, GetAccountView
 urlpatterns = [
     path('orders/', OrderView.as_view()),
     path('create-order/', CreateOrderView.as_view()),
@@ -8,4 +8,5 @@ urlpatterns = [
     path('create-account/', CreateAccountView.as_view()),
     path('login/', LogIn.as_view()),
     path('logout/', LogOut.as_view()),
+    path('get-account/', GetAccountView.as_view()),
 ]

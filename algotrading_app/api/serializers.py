@@ -35,6 +35,7 @@ class CreateAccountSerializer(serializers.ModelSerializer):
 
 class LogInSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(required=False, allow_blank=True)
+    password = serializers.CharField(style={'input_type': 'password'})
     
     class Meta:
         model = Account

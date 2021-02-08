@@ -1,8 +1,15 @@
+* {
+    margin: 0px;
+    padding: 0px;
+    box-sizing: border-box;
+}
+
 html, body {
     height: 100%;
     margin: 0;
     padding: 0;
     /* color: white; */
+    background-color: black;
 }
 
 #main {
@@ -18,9 +25,132 @@ html, body {
     height: 100%;
 }
 
-.center {
+.Header {
+    display: flex;
+    width: 90%;
+    margin: auto;
+    height: 10vh;
+    align-items: center;
+}
+
+.Header__logo {
+    flex: 1;
+    display: flex;
+}
+
+.Header__search {
+    flex: 2;
+}
+
+.Header__search > input {
+    width: 100%;
+    margin: auto;
+    background-color: transparent;
+    border: none;
+    text-align: center;
+    color: white;
+}
+
+.Header__menuItems {
+    flex: 1;
+}
+
+.Header__hamburger {
+    color: #a8dadc;
+    font-size: 25px;
+    display: none;
+}
+
+.Header__navLinks {
+    display: flex;
+    justify-content: space-between;
+    list-style: none;
+}
+
+.Header__navLink {
+    color: #a8dadc;
+    font: 18px;
+    text-decoration: none;
+}
+/* 
+.Homepage {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+} */
+
+.login {
+    display: flex;
+    color: #a8dadc;
+    width: 90%;
+    margin: auto;
+    min-height: 80vh;
+    align-items: center;
+}
+
+.login__header {
+    font-size: 44px;
+    text-align: right;
+    flex: 1;
+}
+
+.login__contents{
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.login__inputs{
+    display: flex;
+    flex-direction: column;
+    width: 70%;
+    margin: auto;
+}
+
+.login__btns {
+    display: flex;
+    flex-direction: column;
+    width: 70%;
+    margin: auto;
+}
+
+.login__btns button{
+    background-color: black;
+    color: #a8dadc;
+    border: 2px solid #a8dadc;
+    border-radius: 12px;
+    padding: 14px, 40px;
+    font-size: 30px;
+}
+
+
+@media screen and (max-width: 900px) {
+    .Header__hamburger{
+        display: block;
+    }
+
+    .Header__menuItems{
+        display: none;
+    }
+
+    .login {
+        margin-top: 10vh;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .login__header {
+        font-size: 30px;
+        text-align: center;
+        flex: 0;
+    }
+    .login__contents {
+        padding-top: 10vh;
+        flex: 0;
+        width: 70%;
+    }
+    .login__inputs {
+        padding-bottom: 5vh;
+    }
 }

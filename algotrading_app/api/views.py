@@ -102,3 +102,15 @@ class LogOut(APIView):
     def get(self, request, format=None):
         logout(request)
         return Response(status=status.HTTP_200_OK)
+
+
+class GetAccountView(APIView):
+    serializer_class = AccountSerializer
+
+    def get(self, request, format=None):
+        account = request.user
+
+        if account.is_anonymous:
+            return Response({'email': '', 'message': 'Not logged in'})
+
+        return Response({'email': account.email, 'username': account.username}, status=status.HTTP_200_OK)

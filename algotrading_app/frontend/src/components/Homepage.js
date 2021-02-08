@@ -12,7 +12,7 @@ export default class Homepage extends Component {
 
     render() {
         return (
-            <div>
+            <div className="Homepage">
                 <Router>
                     <Switch>
                         <Route exact path='/'><p>This is the home page</p></Route>
