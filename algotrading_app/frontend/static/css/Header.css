@@ -1,0 +1,129 @@
+.Header {
+    display: flex;
+    width: 90%;
+    margin: auto;
+    height: 10vh;
+    align-items: center;
+}
+
+.Header__logo {
+    flex: 1;
+    display: flex;
+}
+
+.Header__search {
+    flex: 1;
+}
+
+.Header__search > input {
+    width: 100%;
+    margin: auto;
+    background-color: transparent;
+    border: none;
+    text-align: center;
+    color: white;
+}
+
+.Header__hamburger {
+    color: #a8dadc;
+    font-size: 25px;
+    display: none;
+}
+
+.Header__nav {
+    flex: 1;
+    display: flex;
+    justify-content: space-between;
+}
+
+.Header__nav__item {
+    color: white;
+    font: 18px;
+    text-decoration: none;
+}
+
+.Header__nav__item:hover {
+    color: #a8dadc;
+}
+
+
+@media screen and (max-width:1500px){
+    .Header {
+        position: relative;
+
+    }
+
+    .Header__hamburger{
+        display: block;
+    }
+
+    .Header__nav {
+        display: flex;
+        flex-direction: column;
+        width: 20%;
+        height: 90vh;
+        position: absolute;
+        top: 10vh;
+        right: -100%;
+        opacity: 1;
+        transition: all 0.5s ease;
+        justify-content: space-evenly;
+        align-items: center;
+        list-style: none;
+    }
+
+    .Header__nav.active {
+        background-color: grey;
+        right: 0;
+        opacity: 1;
+        transition: all 0.5s ease;
+        z-index: 1;
+    }
+
+    .Header__nav__item {
+        font-size: 2rem;
+        text-align: center;
+        width: 100%;
+    }
+}
+
+
+@media screen and (max-width: 1024px) {
+    .Header {
+        position: relative;
+
+    }
+
+    .Header__hamburger{
+        display: block;
+    }
+
+    .Header__nav {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        height: 90vh;
+        position: absolute;
+        top: 10vh;
+        right: -100%;
+        opacity: 1;
+        transition: all 0.5s ease;
+        justify-content: space-evenly;
+        align-items: center;
+        list-style: none;
+    }
+
+    .Header__nav.active {
+        background-color: grey;
+        right: 0;
+        opacity: 1;
+        transition: all 0.5s ease;
+        z-index: 1;
+    }
+
+    .Header__nav__item {
+        font-size: 2rem;
+        text-align: center;
+        width: 100%;
+    }
+}
