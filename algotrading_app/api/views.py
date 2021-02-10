@@ -114,3 +114,15 @@ class GetAccountView(APIView):
             return Response({'email': '', 'message': 'Not logged in'})
 
         return Response({'email': account.email, 'username': account.username}, status=status.HTTP_200_OK)
+
+
+class AccountInfoView(APIView):
+    serializer_class = AccountSerializer
+
+    def get(self, request, format=None):
+        account = request.user
+
+        if account.is_anonymous:
+            return Response({'Bad Request': 'Something went Wrong'}, status=status.HTTP_400_BAD_REQUEST)
+
+        return Response({'email': account.email, 'username': account.username, 'password': account.password, 'api_key': account.api_key, 'secret_key': account.secret_key, 'date_joined': account.date_joined})

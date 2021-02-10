@@ -6,7 +6,7 @@ export const MenuItems = [
     },
     {
         title: 'Register',
-        url: '#',
+        url: '/register/',
         cName: 'Header__nav__item'
     },
     {
@@ -24,7 +24,7 @@ export const MenuItemsLoggedIn = [
     },
     {
         title: 'Dashboard',
-        url: '#',
+        url: '/',
         cName: 'Header__nav__item'
     },
     {

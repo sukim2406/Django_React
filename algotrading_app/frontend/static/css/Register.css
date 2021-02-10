@@ -1,4 +1,4 @@
-.login {
+.register {
     display: flex;
     color: #a8dadc;
     width: 90%;
@@ -7,42 +7,41 @@
     align-items: center;
 }
 
-.login__header {
+.register__header {
     font-size: 44px;
     text-align: right;
     flex: 1;
 }
 
-.login__contents{
+.register__contents{
     display: flex;
     flex-direction: column;
     flex: 1;
 }
 
-.login__inputs{
+.register__inputs{
     display: flex;
     flex-direction: column;
     width: 70%;
     margin: auto;
 }
 
-.login__inputs input{
+.register__inputs input{
     width: 100%;
 }
 
-.login__inputs h3{
-    width: 100%;
-    text-align: right;
+.register__inputs p{
+    color:gray;
 }
 
-.login__btns {
+.register__btns {
     display: flex;
     flex-direction: column;
     width: 70%;
     margin: auto;
 }
 
-.login__btns button{
+.register__btns button{
     background-color: black;
     color: #a8dadc;
     border: 2px solid #a8dadc;
@@ -51,30 +50,31 @@
     font-size: 30px;
 }
 
-.login__btns button:hover{
+.register__btns button:hover{
     background-color:  #a8dadc;
     color: white;
 }
 
 
+
 @media screen and (max-width: 1024px) {
-    .login {
+    .register {
         margin-top: 10vh;
         flex-direction: column;
         align-items: center;
     }
 
-    .login__header {
+    .register__header {
         font-size: 30px;
         text-align: center;
         flex: 0;
     }
-    .login__contents {
+    .register__contents {
         padding-top: 10vh;
         flex: 0;
         width: 70%;
     }
-    .login__inputs {
+    .register__inputs {
         padding-bottom: 5vh;
     }
 }

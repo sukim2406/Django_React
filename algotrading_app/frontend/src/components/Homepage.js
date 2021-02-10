@@ -10,14 +10,19 @@ export default class Homepage extends Component {
         super(props);
     }
 
+    refreshPage(){
+        window.location.reload(false);
+    }
+
     render() {
         return (
             <div className="Homepage">
                 <Router>
                     <Switch>
                         <Route exact path='/'><p>This is the home page</p></Route>
-                        <Route path='/login' component={Login}/>
-                        <Route path='/register' component={Register} />
+                        {/* <Route path='/login' component={Login} updateState={this.props.updateSttate}/> */}
+                        <Route path='/login' render={(props) => <Login {...props} isLoggedIn={this.props.isLoggedIn} userInfo={this.props.userInfo} />} />
+                        <Route path='/register' render={(props) => <Register {...props} isLoggedIn={this.props.isLoggedIn} userInfo={this.props.userInfo} /> } />
                         <Route path='/order/:order_id' component={Order} />
                         <Route path='/createorder' component={Signup}/>
                     </Switch>

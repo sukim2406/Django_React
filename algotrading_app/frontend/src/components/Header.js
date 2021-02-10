@@ -7,8 +7,8 @@ export default class Header extends Component {
         super(props);
 
         this.state = {
-            email: '',
-            username: '',
+            // email: '',
+            // username: '',
             search_input: '',
             hamburgerClicked: false,
         }
@@ -31,19 +31,6 @@ export default class Header extends Component {
         })
     }
 
-    isLoggedIn(){
-        const requestOptions = {
-            method: 'GET',
-            headers: {'Content-Type': 'application/json'}
-        };
-        fetch('/api/get-account', requestOptions)
-        .then((response) => response.json())
-        .then((data) => this.setState({
-            email: data.email,
-            username: data.username,
-        }))
-    }
-
     logoutClicked(){
         const requestOptions = {
             method: 'GET',
@@ -54,9 +41,6 @@ export default class Header extends Component {
         .then((data) => console.log(data))
     }
 
-    componentDidMount() {
-        this.isLoggedIn();
-    }
     render() {
         return(      
             <nav className="Header">
@@ -66,15 +50,15 @@ export default class Header extends Component {
                 <div className="Header__search">
                      <input value={this.state.search_input} 
                          onChange={this.handleSearchInput} 
-                         placeholder={this.state.email === "" ? "Log in to search tickers" : "Ticker (ex.SPY)"} type="text" 
-                         disabled={this.state.email === ""? "disabled" : ""}
+                         placeholder={this.props.userInfo.email === ''? "Log in to search tickers" : "Ticker (ex.SPY)"} type="text" 
+                         disabled={this.props.userInfo.email === ''? "disabled" : ""}
                      />
                 </div>
                 <div className="Header__hamburger">
                     <i className={this.state.hamburgerClicked ? 'fas fa-times' : 'fas fa-bars'} onClick={this.handleHamburgerClick}></i>
                 </div>
                 <ul className={this.state.hamburgerClicked ? 'Header__nav active' : 'Header__nav'}>
-                    {this.state.email === "" ?  
+                    {this.props.userInfo.email === ''?  
                         MenuItems.map((item, index) => {
                             return (
                                 <li key={index}><a className={item.cName} href={item.url}>{item.title}</a></li>    

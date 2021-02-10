@@ -7,12 +7,12 @@ export default class Login extends Component {
         this.state={
             input_email: "",
             input_password: "",
-            redirect: false,
         }
 
         this.handleEmailChange = this.handleEmailChange.bind(this);
         this.handlePasswordChange = this.handlePasswordChange.bind(this);
         this.loginClicked = this.loginClicked.bind(this);
+        this.registerClicked = this.registerClicked.bind(this);
     }
     
     handleEmailChange(e){
@@ -40,14 +40,21 @@ export default class Login extends Component {
         };
         fetch('/api/login/', requestOptions)
         .then((response) => response.json())
-        .then((data) => data.status === "Successful" ? this.setState({redirect: true}): this.setState({redirect: false}));
+        .then((data) => data.status === "Successful" ? this.loggedIn(): console.log("login failed"));
+    }
+
+    loggedIn(){
+        this.props.isLoggedIn()
+    }
+
+    registerClicked(){
+        this.props.history.push('/register');
     }
     render() {
-        console.log(this.state.redirect)
-        const { redirect } = this.state.redirect;
-        if (redirect) {
+        if(this.props.userInfo.email !== ''){
             return <Redirect to='/'/>
         }
+
         return (
             <div className="login">
                 <div className="login__header">
@@ -59,12 +66,21 @@ export default class Login extends Component {
                 </div>
                 <div className="login__contents">
                     <div className="login__inputs">
-                        <input value={this.state.input_email} onChange={this.handleEmailChange} placeholder="email" type="text"/>
-                        <input value={this.state.input_password} onChange={this.handlePasswordChange} placeholder="password" type="password"/>
+                        <div className="login__inputs__email">
+                            <h3>EMAIL</h3>
+                            <input value={this.state.input_email} onChange={this.handleEmailChange} placeholder="email" type="text"/>
+                        </div>
+                        <div style={{ height: "1vh" }}></div>
+                        <div className="login__inputs__password">
+                            <h3>PASSWORD</h3>
+                           <input value={this.state.input_password} onChange={this.handlePasswordChange} placeholder="password" type="password"/>
+                        </div>
                     </div>
+                    <div style={{ height: "5vh" }}></div>
                     <div className="login__btns">
                         <button onClick={this.loginClicked}>log in</button>
-                        <button>register</button>
+                        <div style={{ height: "1vh" }}></div>
+                        <button onClick={this.registerClicked}>register</button>
                     </div>
                 </div>
             </div>

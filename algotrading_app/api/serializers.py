@@ -19,7 +19,7 @@ class CreateOrderSerializer(serializers.ModelSerializer):
 class AccountSerializer(serializers.ModelSerializer):
     class Meta:
         model = Account
-        fields = ('email', 'username', 'date_joined', 'last_login')
+        fields = ('email', 'username', 'date_joined', 'last_login', 'date_joined')
 
 
 class CreateAccountSerializer(serializers.ModelSerializer):

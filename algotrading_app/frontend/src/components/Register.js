@@ -1,14 +1,5 @@
 import React, { Component } from 'react'
-import Button from "@material-ui/core/Button"
-import Grid from "@material-ui/core/Grid"
-import Typography from "@material-ui/core/Typography"
-import TextField from "@material-ui/core/TextField"
-import FormHelperText from "@material-ui/core/FormHelperText"
-import FormControl from "@material-ui/core/FormControl"
-import { Link } from "react-router-dom"
-import Radio from "@material-ui/core/Radio"
-import RadioGroup from "@material-ui/core/RadioGroup"
-import FormControlLabel from "@material-ui/core/FormControlLabel"
+import { Link, Redirect } from "react-router-dom"
 
 export default class Login extends Component {
     constructor(props) {
@@ -27,6 +18,7 @@ export default class Login extends Component {
         this.handleApiKeyChange = this.handleApiKeyChange.bind(this);
         this.handleSecretKeyChange = this.handleSecretKeyChange.bind(this);
         this.handleRegisterButtonClicked = this.handleRegisterButtonClicked.bind(this);
+        this.loginClicked = this.loginClicked.bind(this);
     }
 
     handleEmailChange(e){
@@ -59,6 +51,21 @@ export default class Login extends Component {
         })
     }
 
+    autoLogin(){
+        const requestOptions = {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                email: this.state.email,
+                password: this.state.password,
+            })
+        };
+        fetch('/api/login/', requestOptions)
+        .then((response) => response.json())
+        .then((data) => data.status === "Successful" ? this.loggedIn(): console.log("login failed"));
+    }
+
+
     handleRegisterButtonClicked(){
         console.log(this.state);
 
@@ -73,79 +80,66 @@ export default class Login extends Component {
                 secret_key: this.state.secret_key,
             })
         };
-        fetch('/api/create-account', requestOptions)
+        fetch('/api/create-account/', requestOptions)
         .then((response) => response.json())
-        .then(() => this.props.history.push('/'));
+        .then((data) => data.email !== ''? this.autoLogin(): console.log("failed register"));
+    }
+
+    loggedIn(){
+        this.props.isLoggedIn()
+    }
+
+    loginClicked(){
+        this.props.history.push('/login');
     }
 
     render() {
+        if(this.props.userInfo.email !== ''){
+            return <Redirect to='/' />
+        }
         return (
-            <div>
-                <p>This will be register page</p>
-                <Grid container spacing={1}>
-                    <Grid item xs={12} align="center">
-                        <Typography component='h4' variant='h4'>
-                            Register
-                        </Typography>
-                    </Grid>
-                    <Grid item xs={12} align="center">
-                        <FormControl>
-                            <TextField
-                                required = {true}
-                                label = "Email"
-                                inputProps = {{ style:{textAlign: "center"}}}
-                                onChange = {this.handleEmailChange}
-                            />
-                        </FormControl>
-                    </Grid>
-                    <Grid item xs={12} align="center">
-                        <FormControl>
-                            <TextField
-                                required = {true}
-                                label = "Username"
-                                inputProps = {{ style:{textAlign: "center"}}}
-                                onChange = {this.handleUsernameChange}
-                            />
-                        </FormControl>
-                    </Grid>
-                    <Grid item xs={12} align="center">
-                        <FormControl>
-                            <TextField
-                                required = {true}
-                                type = "password"
-                                label = "Password"
-                                inputProps = {{ style:{textAlign: "center"}}}
-                                onChange = {this.handlePasswordChange}
-                            />
-                        </FormControl>
-                    </Grid>
-                    <Grid item xs={12} align="center">
-                        <FormControl>
-                            <TextField
-                                required = {true}
-                                label = "API Key"
-                                inputProps = {{ style:{textAlign: "center"}}}
-                                onChange = {this.handleApiKeyChange}
-                            />
-                        </FormControl>
-                    </Grid>
-                    <Grid item xs={12} align="center">
-                        <FormControl>
-                            <TextField
-                                required = {true}
-                                label = "SECRET Key"
-                                inputProps = {{ style:{textAlign: "center"}}}
-                                onChange = {this.handleSecretKeyChange}
-                            />
-                        </FormControl>
-                    </Grid>
-                    <Grid item xs={12} align="center">
-                        <Button color="primary" variant="contained" onClick={this.handleRegisterButtonClicked}>Register</Button>
-                    </Grid>
-                    <Grid item xs={12} align="center">
-                        <Button color="secondary" variant="contained" to="/" component={Link}>Cancel</Button>
-                    </Grid>
-                </Grid>
+            <div className="register">
+                <div className="register__header">
+                    <div>
+                        <h2>Welcome</h2>
+                        <h3>to</h3>
+                        <h1>BILLSTACX</h1>
+                    </div>
+                </div>
+                <div className="register__contents">
+                    <div className="register__inputs">
+                        <div className="register__inputs__email">
+                            <h3>Email</h3>
+                            <input value={this.state.email} onChange={this.handleEmailChange} placeholder="email" type="text"/>
+                        </div>
+                        <div style={{ height: "1vh" }}></div>
+                        <div className="register__inputs__username">
+                            <h3>Username</h3>
+                            <input value={this.state.username} onChange={this.handleUsernameChange} placeholder="username" type="text"/>
+                        </div>
+                        <div style={{ height: "1vh" }}></div>
+                        <div className="register__inputs__password">
+                            <h3>Password</h3>
+                            <input value={this.state.password} onChange={this.handlePasswordChange} placeholder="password" type="password"/>
+                            <p>minimum 6 digits</p>
+                        </div>
+                        <div style={{ height: "1vh" }}></div>
+                        <div className="register__inputs__api">
+                            <h3>Alpaca API Key</h3>
+                            <input value={this.state.api_key} onChange={this.handleApiKeyChange} placeholder="API key" type="text"/>
+                        </div>
+                        <div style={{ height: "1vh" }}></div>
+                        <div className="register__inputs__secret">
+                            <h3>Alpaca Secret API Key</h3>
+                            <input value={this.state.secret_key} onChange={this.handleSecretKeyChange} placeholder="Secret key" type="text"/>
+                        </div>
+                    </div>
+                    <div style={{ height: "5vh" }}></div>
+                    <div className="login__btns">
+                        <button onClick={this.handleRegisterButtonClicked}>Register</button>
+                        <button onClick={this.loginClicked}>Log In</button>
+                    </div>    
+                </div>
             </div>
         )
     }
