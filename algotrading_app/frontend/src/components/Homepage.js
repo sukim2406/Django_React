@@ -3,6 +3,7 @@ import Login from "./Login";
 import Signup from "./CreateOrder";
 import Order from "./Order";
 import Register from "./Register";
+import AccountInfo from "./AccountInfo"
 import { BrowserRouter as Router, Switch, Route, Link, Redirect} from "react-router-dom";
 
 export default class Homepage extends Component {
@@ -25,6 +26,7 @@ export default class Homepage extends Component {
                         <Route path='/register' render={(props) => <Register {...props} isLoggedIn={this.props.isLoggedIn} userInfo={this.props.userInfo} /> } />
                         <Route path='/order/:order_id' component={Order} />
                         <Route path='/createorder' component={Signup}/>
+                        <Route path='/account-info' component={AccountInfo} />
                     </Switch>
                 </Router>
             </div>

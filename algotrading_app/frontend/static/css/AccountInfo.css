@@ -1,0 +1,43 @@
+.accountInfo {
+    display: flex;
+    color: gray;
+    width: 70%;
+    margin: auto;
+    min-height: 80vh;
+    align-items: center;
+}
+
+.accountInfo__tab{
+    font-size: 2rem;
+    flex: 1;
+    text-align: right;
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+}
+
+.accountInfo__item{
+    display: flex;
+}
+
+.accountInfo__tab__item{
+    flex: 2;
+}
+
+.accountInfo__tab__bar{
+    flex: 1;
+    font-size: 2rem;    
+    margin-left: 2vw;
+    border-left: thick solid;
+    height: 3rem;
+}
+
+.clicked{
+    color: #a8dadc;
+}
+
+.accountInfo__info{
+    font-size: 1rem;
+    flex: 1;
+    text-align: left;
+}

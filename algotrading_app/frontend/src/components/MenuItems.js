@@ -29,7 +29,7 @@ export const MenuItemsLoggedIn = [
     },
     {
         title: 'Account',
-        url: '#',
+        url: '/account-info/',
         cName: 'Header__nav__item'
     },
     {
