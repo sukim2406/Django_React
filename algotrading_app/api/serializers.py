@@ -41,3 +41,13 @@ class LogInSerializer(serializers.ModelSerializer):
         model = Account
         fields = ('email', 'password')
 
+
+class AccountUpdateSerializer(serializers.Serializer):
+    model = Account
+
+    """
+    Serializer for password change endpoint.
+    """
+    new_password = serializers.CharField(allow_blank=True, style={'input_type': 'password'})
+    new_api_key = serializers.CharField(required=True)
+    new_secret_key = serializers.CharField(required=True)

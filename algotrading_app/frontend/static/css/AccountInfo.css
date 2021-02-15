@@ -41,3 +41,35 @@
     flex: 1;
     text-align: left;
 }
+
+
+@media screen and (max-width: 1024px) {
+    .accountInfo {
+        margin-top: 3vh;
+        flex-direction: column;
+        align-items: center;
+        width: 90%;
+    }
+
+    .accountInfo__info{
+        width: 100%;
+    }
+
+    .accountInfo__tab{
+        width: 100%;
+        flex: 0;
+        font-size: 1rem;
+        flex-direction: row;
+        justify-content: space-evenly;
+        padding-bottom: 5vh;
+    }
+
+    .accountInfo__tab__bar{
+        display: none;
+    }
+
+    .accountInfo__tab__item{
+        border-bottom: solid;
+    }
+
+}

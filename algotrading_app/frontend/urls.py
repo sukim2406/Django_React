@@ -8,4 +8,5 @@ urlpatterns = [
     path('order/<str:order_id>/', index),
     path('register/', index, name='register'),
     path('account-info/', index, name='account-info'),
+    path('logout/', index, name='logout'),
 ]

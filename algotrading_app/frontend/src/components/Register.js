@@ -8,13 +8,18 @@ export default class Login extends Component {
             email: "",
             username: "",
             password: "",
+            password_confirm: "",
             api_key: "",
             secret_key: "",
+            validated: false,
+            error_msg: "",
+            show_error: false,
         }
 
         this.handleEmailChange = this.handleEmailChange.bind(this);
         this.handleUsernameChange = this.handleUsernameChange.bind(this);
         this.handlePasswordChange = this.handlePasswordChange.bind(this);
+        this.handlePasswordConfirmChange = this.handlePasswordConfirmChange.bind(this);
         this.handleApiKeyChange = this.handleApiKeyChange.bind(this);
         this.handleSecretKeyChange = this.handleSecretKeyChange.bind(this);
         this.handleRegisterButtonClicked = this.handleRegisterButtonClicked.bind(this);
@@ -35,8 +40,14 @@ export default class Login extends Component {
 
     handlePasswordChange(e){
         this.setState({
-            password: e.target.value
-        })
+            password: e.target.value,
+        });
+    }
+
+    handlePasswordConfirmChange(e){
+        this.setState({
+            password_confirm: e.target.value,
+        });
     }
 
     handleApiKeyChange(e){
@@ -49,6 +60,25 @@ export default class Login extends Component {
         this.setState({
             secret_key: e.target.value
         })
+    }
+
+    validatePassword(){
+        if(this.state.password != this.state.password_confirm){
+            this.setState({
+                error_msg: "password did not match",
+            })
+            return false;
+        }
+        else if(this.state.password.length <= 6){
+            console.log(this.state.password.length);
+            this.setState({
+                error_msg: "password must be longer then 6 characters",
+            })
+            return false;
+        }
+        else{
+            return true;
+        }
     }
 
     autoLogin(){
@@ -67,22 +97,27 @@ export default class Login extends Component {
 
 
     handleRegisterButtonClicked(){
-        console.log(this.state);
-
-        const requestOptions = {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json'},
-            body: JSON.stringify({
-                email: this.state.email,
-                username: this.state.username,
-                password: this.state.password,
-                api_key: this.state.api_key,
-                secret_key: this.state.secret_key,
+        if(this.validatePassword()){
+            const requestOptions = {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    email: this.state.email,
+                    username: this.state.username,
+                    password: this.state.password,
+                    api_key: this.state.api_key,
+                    secret_key: this.state.secret_key,
+                })
+            };
+            fetch('/api/create-account/', requestOptions)
+            .then((response) => response.json())
+            .then((data) => data.email !== ''? this.autoLogin(): console.log("failed register"));
+        }
+        else{
+            this.setState({
+                show_error: true,
             })
-        };
-        fetch('/api/create-account/', requestOptions)
-        .then((response) => response.json())
-        .then((data) => data.email !== ''? this.autoLogin(): console.log("failed register"));
+        }
     }
 
     loggedIn(){
@@ -121,7 +156,12 @@ export default class Login extends Component {
                         <div className="register__inputs__password">
                             <h3>Password</h3>
                             <input value={this.state.password} onChange={this.handlePasswordChange} placeholder="password" type="password"/>
-                            <p>minimum 6 digits</p>
+                        </div>
+                        <div style={{ height: "1vh" }}></div>
+                        <div className="register__inputs__password_confirm">
+                            <h3>Password Confirm</h3>
+                            <input value={this.state.password_confirm} onChange={this.handlePasswordConfirmChange} placeholder="password" type="password"/>
+                            <p style={{ color: "red" , display: this.state.show_error ? "contents" : "none" }}>{this.state.error_msg}</p>
                         </div>
                         <div style={{ height: "1vh" }}></div>
                         <div className="register__inputs__api">

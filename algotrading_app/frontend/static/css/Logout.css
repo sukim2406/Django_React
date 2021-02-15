@@ -1,0 +1,60 @@
+.logout {
+    display: flex;
+    color: #a8dadc;
+    width: 90%;
+    margin: auto;
+    min-height: 80vh;
+    align-items: center;
+}
+
+.logout__header {
+    font-size: 44px;
+    text-align: right;
+    flex: 1;
+}
+
+.logout__header h4{
+    font-size: 2rem;
+}
+
+.logout__contents{
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.logout__contents__btn{
+    display: flex;
+    flex-direction: column;
+    width: 70%;
+    margin: auto;
+    color: gray;
+}
+
+.logout__contents__btn a{
+    text-decoration: none;
+    color: #a8dadc;
+}
+
+
+@media screen and (max-width: 1024px){
+    .logout {
+        margin-top: 10vh;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .logout__header {
+        font-size: 30px;
+        text-align: center;
+        flex: 0;
+    }
+
+    .logout__contents {
+        padding-top: 10vh;
+        flex: 0;
+        width: 70%;
+        text-align: right;
+    }
+
+}

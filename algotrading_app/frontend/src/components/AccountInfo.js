@@ -7,7 +7,7 @@ export default class AccountInfo extends Component {
 
         this.state = {
             accountInfo: '',
-            active: 'history',
+            active: 'account',
         };
 
         this.accountClicked = this.accountClicked.bind(this);

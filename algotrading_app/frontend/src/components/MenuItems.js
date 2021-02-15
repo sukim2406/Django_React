@@ -39,7 +39,7 @@ export const MenuItemsLoggedIn = [
     },
     {
         title: 'Log Out',
-        url: '#',
+        url: '/logout/',
         cName: 'Header__nav__item'
     },
     {
