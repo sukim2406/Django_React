@@ -43,11 +43,16 @@ class LogInSerializer(serializers.ModelSerializer):
 
 
 class AccountUpdateSerializer(serializers.Serializer):
-    model = Account
 
     """
     Serializer for password change endpoint.
     """
+    email = serializers.EmailField(required=False, allow_blank=True)
+    cur_password = serializers.CharField(allow_blank=True, style={'input_type': 'password'})
     new_password = serializers.CharField(allow_blank=True, style={'input_type': 'password'})
-    new_api_key = serializers.CharField(required=True)
-    new_secret_key = serializers.CharField(required=True)
+    api_key = serializers.CharField(required=False, allow_blank=True)
+    secret_key = serializers.CharField(required=False, allow_blank=True)
+
+    class Meta:
+        model = Account
+        fields = ('pasword', 'api_key', 'secret_key')

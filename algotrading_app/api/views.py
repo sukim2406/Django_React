@@ -9,6 +9,9 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 
 
+
+
+
 # Create your views here.
 
 class OrderView(generics.ListAPIView):
@@ -128,35 +131,36 @@ class AccountInfoView(APIView):
         return Response({'email': account.email, 'username': account.username, 'password': account.password, 'api_key': account.api_key, 'secret_key': account.secret_key, 'date_joined': account.date_joined})
 
 
-class AccountUpdateView(generics.UpdateAPIView):
-        """
-        An endpoint for changing password.
-        """
-        serializer_class = AccountUpdateSerializer
-        model = Account
-        permission_classes = (IsAuthenticated,)
+class AccountUpdateView(APIView):
+    authentication_classes= ()
+    serializer_class = AccountUpdateSerializer
 
-        def get_object(self, queryset=None):
-            obj = self.request.user
-            return obj
+    def post(self, request, format=None):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        
+        email = serializer.data.get('email')
+        old_password = serializer.data.get('cur_password')
+        account = authenticate(email=email, password=old_password)
+        login(request,account)
+        if account.is_anonymous:
+            return Response({'message': 'anonymous'})
 
-        def update(self, request, *args, **kwargs):
-            self.object = self.get_object()
-            serializer = self.get_serializer(data=request.data)
+        account = request.user
 
-            if serializer.is_valid():
-                if serializer.data.get("new_password") != '':
-                    self.object.set_password(serializer.data.get("new_password"))
-                self.object.api_key = serializer.data.get("new_api_key")
-                self.object.secret_key = serializer.data.get("new_secret_key")
-                self.object.save()
-                response = {
-                    'status': 'success',
-                    'code': status.HTTP_200_OK,
-                    'message': 'Password updated successfully',
-                    'data': [serializer.data.get("new_password")]
-                }
 
-                return Response(response)
+        if serializer.data.get("password") != '':
+            account.set_password(serializer.data.get("new_password"))
+        if serializer.data.get("api_key") != '':
+            account.api_key = serializer.data.get("api_key")
+        if serializer.data.get("secret_key") != '':
+            account.secret_key = serializer.data.get("secret_key")
+        account.save()
+        response = {
+            'status': 'success',
+            'code': status.HTTP_200_OK,
+            'message': 'Password updated successfully',
+            'data': [serializer.data.get("new_password")]
+        }
 
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(response)

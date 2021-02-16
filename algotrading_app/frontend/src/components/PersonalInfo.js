@@ -4,16 +4,20 @@ export default class PersonalInfo extends Component {
     constructor(props){
         super(props);
         this.state = {
+            cur_password: "",
             new_password: "",
             new_password_confirm: "",
             new_api_key: this.props.accountInfo.api_key,
             new_secret_key: this.props.accountInfo.secret_key,
             password_change: false,
             api_change: false,
+            error_msg: '',
+            show_error: false,
         }
 
         this.changePasswordClicked = this.changePasswordClicked.bind(this);
         this.changeAPIClicked = this.changeAPIClicked.bind(this);
+        this.handleCurrentPasswordChange = this.handleCurrentPasswordChange.bind(this);
         this.handleNewPasswordChange = this.handleNewPasswordChange.bind(this);
         this.handleNewPasswordConfirmCHange = this.handleNewPasswordConfirmCHange.bind(this);
         this.handleNewAPIKeyChange = this.handleNewAPIKeyChange.bind(this);
@@ -21,18 +25,41 @@ export default class PersonalInfo extends Component {
         this.confirmClicked = this.confirmClicked.bind(this);   
     }
 
+    resetNewPassword(){
+        this.setState({
+            new_password: '',
+            new_password_confirm: '',
+            cur_password: '',
+        })
+    }
+
+    resetNewAPIKeys(){
+        this.setState({
+            new_api_key: this.props.accountInfo.api_key,
+            new_secret_key: this.props.accountInfo.secret_key,
+        })
+    }
+
     changePasswordClicked(){
+        this.resetNewPassword();
         this.setState({
             password_change: !this.state.password_change,
         })
     }
 
     changeAPIClicked(){
+        this.resetNewAPIKeys();
         this.setState({
             api_change: !this.state.api_change,
         })
     }
 
+    handleCurrentPasswordChange(e){
+        const value = e.target.value;
+        this.setState({
+            cur_password: value,
+        })
+    }
     handleNewPasswordChange(e){
         const value = e.target.value;
         this.setState({
@@ -62,8 +89,48 @@ export default class PersonalInfo extends Component {
     }
 
     confirmClicked(){
-        console.log(this.state);
+        if(!this.state.password_change || this.validatePassword()){
+            const requestOptions = {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    email: this.props.accountInfo.email,
+                    cur_password: this.state.cur_password,
+                    new_password: this.state.new_password,
+                    api_key: this.state.new_api_key,
+                    secret_key: this.state.new_secret_key,
+                })
+            };
+            fetch('/api/update-account/', requestOptions)
+            .then((response) => response.json())
+            .then((data) => console.log(data));
+        }
+        else{
+            this.setState({
+                show_error: true,
+            })
+        }
     }
+
+    validatePassword(){
+        if(this.state.new_password != this.state.new_password_confirm){
+            this.setState({
+                error_msg: "password did not match",
+            })
+            return false;
+        }
+        else if(this.state.new_password.length <= 6){
+            console.log(this.state.new_password.length);
+            this.setState({
+                error_msg: "password must be longer then 6 characters",
+            })
+            return false;
+        }
+        else{
+            return true;
+        }
+    }
+
 
     render() {
         return (
@@ -81,10 +148,18 @@ export default class PersonalInfo extends Component {
                             <h3>Username</h3>
                             <input value={this.props.accountInfo.username} type="text" disabled />
                         </div>
+                        { this.state.password_change ?
+                                <div className="personalInfo__content__item">
+                                    <h3>Current Password</h3>
+                                    <input value={this.state.cur_password} onChange={this.handleCurrentPasswordChange} type="password"  />  
+                                </div>
+                            :
+                            <div></div>
+                        }
                         { this.state.password_change ? 
                                 <div className="personalInfo__content__item">
                                     <h3>New Password</h3>
-                                    <input value={this.state.new_password} onChange={this.handleNewPasswordChange} type="text"  />
+                                    <input value={this.state.new_password} onChange={this.handleNewPasswordChange} type="password"  />
                                 </div>
                             : 
                                 <div className="personalInfo__content__item">
@@ -96,13 +171,15 @@ export default class PersonalInfo extends Component {
                         { this.state.password_change ? 
                                 <div className="personalInfo__content__item">
                                     <h3>New Password Confirm</h3>
-                                    <input value={this.state.new_password_confirm} onChange={this.handleNewPasswordConfirmCHange} type="text" />
+                                    <input value={this.state.new_password_confirm} onChange={this.handleNewPasswordConfirmCHange} type="password" />
                                     <button onClick={this.changePasswordClicked}>Cancel</button>
+                                    <p style={{ color: "red" , display: this.state.show_error ? "contents" : "none" }}>{this.state.error_msg}</p>
                                 </div>
                             : 
                                 <div className="personalInfo__content__item">
                                     <h3>Change Password</h3>
                                     <button onClick={this.changePasswordClicked}>Change Password</button>
+                                    
                                 </div>
                         }
                         
