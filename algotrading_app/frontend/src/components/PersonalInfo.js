@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { Redirect } from 'react-router-dom'
 
 export default class PersonalInfo extends Component {
     constructor(props){
@@ -13,6 +14,7 @@ export default class PersonalInfo extends Component {
             api_change: false,
             error_msg: '',
             show_error: false,
+            accountInfoChanged: false,
         }
 
         this.changePasswordClicked = this.changePasswordClicked.bind(this);
@@ -89,6 +91,7 @@ export default class PersonalInfo extends Component {
     }
 
     confirmClicked(){
+        console.log(this.state);
         if(!this.state.password_change || this.validatePassword()){
             const requestOptions = {
                 method: 'POST',
@@ -96,14 +99,14 @@ export default class PersonalInfo extends Component {
                 body: JSON.stringify({
                     email: this.props.accountInfo.email,
                     cur_password: this.state.cur_password,
-                    new_password: this.state.new_password,
-                    api_key: this.state.new_api_key,
-                    secret_key: this.state.new_secret_key,
+                    new_password: this.state.password_change ? this.state.new_password : this.state.cur_password,
+                    api_key: this.state.api_change? this.state.new_api_key : this.props.accountInfo.api_key,
+                    secret_key: this.state.api_change ? this.state.new_secret_key : this.props.accountInfo.secret_key,
                 })
             };
             fetch('/api/update-account/', requestOptions)
             .then((response) => response.json())
-            .then((data) => console.log(data));
+            .then((data) => data.status==="success" ? this.setState({accountInfoChanged : true}) : "");
         }
         else{
             this.setState({
@@ -133,6 +136,9 @@ export default class PersonalInfo extends Component {
 
 
     render() {
+        if(this.state.accountInfoChanged){
+            return <Redirect to='/logout/' />
+        }
         return (
             <div className="personalInfo">
                     <div className="personalInfo__header">
@@ -148,14 +154,6 @@ export default class PersonalInfo extends Component {
                             <h3>Username</h3>
                             <input value={this.props.accountInfo.username} type="text" disabled />
                         </div>
-                        { this.state.password_change ?
-                                <div className="personalInfo__content__item">
-                                    <h3>Current Password</h3>
-                                    <input value={this.state.cur_password} onChange={this.handleCurrentPasswordChange} type="password"  />  
-                                </div>
-                            :
-                            <div></div>
-                        }
                         { this.state.password_change ? 
                                 <div className="personalInfo__content__item">
                                     <h3>New Password</h3>
@@ -216,6 +214,14 @@ export default class PersonalInfo extends Component {
                             <h3>User since</h3>
                             <input value={this.props.accountInfo.date_joined} type="text" disabled />
                         </div>
+                        { this.state.password_change || this.state.api_change ?
+                                <div className="personalInfo__content__item">
+                                    <h3>Current Password</h3>
+                                    <input value={this.state.cur_password} onChange={this.handleCurrentPasswordChange} type="password"  />  
+                                </div>
+                            :
+                            <div></div>
+                        }
                     </div>
                     <div className="personalInfo__btns">
                         <div className="personalInfo__btns__confirm">
